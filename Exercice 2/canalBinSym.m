@@ -9,7 +9,8 @@ function result = canalBinSym(data)
 %
 
 %initialisation de la structure utilisee pour le resultat
-result = zeros (size(data)); 
+n = numel(data);
+result = zeros(1, 7*(n/4));
 
 %le code suivant ne fait qu'une copie (canal parfait)
 % a modifier pour simuler le canal binaire symetrique avec pError
@@ -27,7 +28,7 @@ for i = 1:4:n-3
     p7 = xor(d1, xor(d3, d4));
 
     %codeword
-    result = [d1 d2 d3 d4 p5 p6 p7]
+    result = [d1 d2 d3 d4 p5 p6 p7];
 
 end
 

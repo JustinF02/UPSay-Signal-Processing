@@ -27,36 +27,41 @@ keySet = {'1000',
         '0010', 
         '0001'};
 
-valueSet = ['101',
+valueSet = {'101',
     '110',
     '111',
-   '011'];
-H = containers.Map(keySet,valueSet)
+   '011'};
+H = containers.Map(keySet,valueSet);
 
 %linéarisation de l'image en n*1
-[x y] = size(canalTransmis)
-imgLinear = canalTransmis(:)
-resultLinear = zeros (size(imgLinear))
+[x y] = size(canalTransmis);
+imgLinear = canalTransmis(:);
+resultLinear = zeros (size(imgLinear));
 
 n = numel(imgLinear)
 if mod(n, 7 )~= 0
     error("décodage : le nombre de bit doit être multiple de 7");
 end
 
+mapZ = containers.Map( ...
+    {'101','110','111','011'}, ...
+    [1,2,3,4] ...
+);
+
 
 % ATTENTION toutes les valeurs utilisees sont soit 0 soit 1
 for i = 1:4:n-3
-    block = imgLinear(i:i+3); %récupération du bloc de 4 bits
+    block = imgLinear(i:i+6); %récupération du bloc de 7 bits
 
-    if mod(numel(block, 7)) ~= 0
-        error("Suite de bit non-égale à 7")
+    if numel(block) ~= 7
+        error('Suite de bits non-égale à 7');
     end
 
-    d = block([1 2 3 4]);
-    p = block([5 6 7]);
+    d = block(1:4);
+    p = block(5:7);
 
     keyD = sprintf('%d%d%d%d', d); %toString()
-    keyP = sprintf('%d%d%d', p);
+    keyP = sprintf('%d%d%d', p); %'101'
 
 
 
@@ -64,8 +69,15 @@ for i = 1:4:n-3
         expectedP = H(keyD);
 
         if  ~strcmp(expectedP, keyP)
-            %something wrong, correct
-            d = flipBit(block, )% ICI DETERMINER QUEL EST LE BON BIT A CHANGER
+            
+            %trouver les p bits dans la map pour connaitre le bit à changer
+            if isKey(mapZ, keyP)
+                pos = mapZ(keyP);     % 1..4
+                d = flipBit(d, pos);  % inverse d(pos)
+            else
+                %Cas typiques '001','010','100' = erreur sur bit de parité -> on ne touche pas aux data
+                %ou z='000' (pas d'erreur)
+            end
         end
         % add corrected (or not) block
 
@@ -75,6 +87,7 @@ for i = 1:4:n-3
     end
 end
 
+%reconstruire l'image
 result = reshape(resultLinear, i, j)
 
 end

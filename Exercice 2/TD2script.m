@@ -37,4 +37,4 @@ for i = 1 : tries
     bilanErreurs(i) = nombreErreurs;
 end
 
-
+ 

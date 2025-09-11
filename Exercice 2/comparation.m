@@ -13,7 +13,7 @@ result = 0;
 for i = 1:n 
     for j = 1:m
         if(dataIn(i,j) ~= dataOut(i,j)) 
-            result = result +1
+            result = result +1;
         end
     end
 end

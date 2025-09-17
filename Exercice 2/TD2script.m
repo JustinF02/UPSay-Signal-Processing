@@ -11,7 +11,7 @@ figure('Name','Image RGB initiale');
 grayImage = rgb2gray(inputImage);    % conversion en niveaux de gris
 figure('Name','Image niveaux gris');
 %imshow(grayImage);
-binImage = im2bw(grayImage);         % conversion en image binaire
+binImage = imbinarize(grayImage);         % conversion en image binaire
 figure('Name','Image binaire');
 imshow(binImage);
 
@@ -19,22 +19,32 @@ imshow(binImage);
 
 
 for i = 1 : tries
-    canalTransmis = canalBinSym(binImage);
+    canalTransmis = canalBinSym(binImage, 0.1);
     
     imageDecodee = decodage(canalTransmis);
     
     %on affiche les images seulement si on simule une seule fois
     if tries == 1
         figure('Name','Canal transmis');
-        imshow(canalTransmis);
+        imshow(canalTransmis, []);
         figure('Name','Image decodee');
         imshow(imageDecodee);
+
+        disp('Taille de binImage :');
+        disp(size(binImage));
+        
+        disp('Taille de canalTransmis :');
+        disp(size(canalTransmis));
+        
+        disp('Taille de imageDecodee :');
+        disp(size(imageDecodee));
+
     end
 
     
 
-    nombreErreurs = comparation(binImage, imageDecodee);
-    bilanErreurs(i) = nombreErreurs;
+    %nombreErreurs = comparation(binImage, imageDecodee);
+    %bilanErreurs(i) = nombreErreurs;
 end
 
- 
+

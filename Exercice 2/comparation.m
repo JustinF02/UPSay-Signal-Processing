@@ -8,12 +8,16 @@ function result = comparation(dataIn, dataOut)
 %            format: le meme que la donnee d'entree
 % result   = nombre de bits differents entre les deux matrices
 %
+if size(dataIn) ~= size(dataOut)
+    error('Les matrices de données ont des tailles différentes.');
+end
+
 result = 0;
 [n, m] = size(dataIn)
 for i = 1:n 
     for j = 1:m
         if(dataIn(i,j) ~= dataOut(i,j)) 
-            result = result +1;
+            result = result +1
         end
     end
 end

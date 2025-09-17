@@ -38,7 +38,7 @@ H = containers.Map(keySet,valueSet);
 imgLinear = canalTransmis(:);
 resultLinear = zeros (size(imgLinear));
 
-n = numel(imgLinear)
+n = numel(imgLinear);
 if mod(n, 7 )~= 0
     error("décodage : le nombre de bit doit être multiple de 7");
 end
@@ -48,20 +48,19 @@ mapZ = containers.Map( ...
     [1,2,3,4] ...
 );
 
-
 % ATTENTION toutes les valeurs utilisees sont soit 0 soit 1
-for i = 1:4:n-3
-    block = imgLinear(i:i+6); %récupération du bloc de 7 bits
+for i = 1:7:n-6
+    block = imgLinear(i:i+6); %récupération du bloc de 4 bits
 
     if numel(block) ~= 7
-        error('Suite de bits non-égale à 7');
+        error("Suite de bit non-égale à 7");
     end
 
-    d = block(1:4);
-    p = block(5:7);
+    d = block([1 2 3 4]);
+    p = block([5 6 7]);
 
     keyD = sprintf('%d%d%d%d', d); %toString()
-    keyP = sprintf('%d%d%d', p); %'101'
+    keyP = sprintf('%d%d%d', p);
 
 
 
@@ -77,18 +76,18 @@ for i = 1:4:n-3
             else
                 %Cas typiques '001','010','100' = erreur sur bit de parité -> on ne touche pas aux data
                 %ou z='000' (pas d'erreur)
+                fprintf("Data %s absente de la map ! Ignorer le bloc...\n", keyD);
             end
         end
         % add corrected (or not) block
 
-        resultLinear = resultLinear + d
+        resultLinear(i:i+3) = d;
     else
         fprintf("Data %s absente de la map !!", keyD);
     end
 end
 
-%reconstruire l'image
-result = reshape(resultLinear, i, j)
+result = reshape(resultLinear, x, y);
 
 end
 
